@@ -291,24 +291,20 @@ function initCounterAnimation() {
                             current = finalValue;
                             clearInterval(counter);
                         }
-                        
-                        // تنسيق الأرقام
-                        let displayValue = Math.floor(current).toLocaleString('ar-SA');
+                        // اجعل الأرقام دائمًا إنجليزية
+                        let displayValue = Math.floor(current).toLocaleString('en');
                         if (text.includes('%')) {
                             displayValue += '%';
                         } else if (text.includes('/')) {
                             displayValue = text;
                         }
-                        
                         target.textContent = displayValue + (suffix ? ' ' + suffix : '');
                     }, 16);
                 }
-                
                 counterObserver.unobserve(target);
             }
         });
     }, { threshold: 0.5 });
-    
     statItems.forEach(stat => {
         counterObserver.observe(stat);
     });
@@ -467,53 +463,7 @@ function scrollToTop() {
 }
 
 // ========== زر العودة للأعلى ==========
-const scrollTopBtn = document.createElement('button');
-scrollTopBtn.innerHTML = '<i class="fas fa-arrow-up"></i>';
-scrollTopBtn.className = 'scroll-to-top';
-scrollTopBtn.style.cssText = `
-    position: fixed;
-    bottom: 100px;
-    right: 30px;
-    width: 50px;
-    height: 50px;
-    background: linear-gradient(135deg, var(--purple-dark) 0%, var(--purple-medium) 100%);
-    color: white;
-    border: none;
-    border-radius: 50%;
-    font-size: 20px;
-    cursor: pointer;
-    display: none;
-    z-index: 9998;
-    box-shadow: 0 4px 15px rgba(84, 88, 162, 0.4);
-    transition: all 0.3s ease;
-    align-items: center;
-    justify-content: center;
-`;
-
-scrollTopBtn.addEventListener('mouseenter', function() {
-    this.style.transform = 'translateY(-5px) scale(1.1)';
-    this.style.boxShadow = '0 6px 20px rgba(84, 88, 162, 0.6)';
-});
-
-scrollTopBtn.addEventListener('mouseleave', function() {
-    this.style.transform = 'translateY(0) scale(1)';
-    this.style.boxShadow = '0 4px 15px rgba(84, 88, 162, 0.4)';
-});
-
-scrollTopBtn.addEventListener('click', scrollToTop);
-scrollTopBtn.addEventListener('touchend', function(e) {
-    e.preventDefault();
-    scrollToTop();
-});
-document.body.appendChild(scrollTopBtn);
-
-window.addEventListener('scroll', function() {
-    if (window.pageYOffset > 300) {
-        scrollTopBtn.style.display = 'flex';
-    } else {
-        scrollTopBtn.style.display = 'none';
-    }
-});
+// Entire block should be removed (from scrollTopBtn ... to window.addEventListener('scroll', ... ))
 
 // ========== أزرار عائمة: تبديل الوضع واللغة (تظهر عند النزول) ==========
 function initFloatingActions() {
@@ -672,7 +622,7 @@ function initFloatingActions() {
                 }
             });
 
-            // translate service cards (titles and descriptions) - 9 services total
+            // ترجمة الخدمات - عدل ليشمل 11 خدمة:
             const serviceTitlesEn = [
                 'Personal Customs Clearance',
                 'Corporate Customs Clearance',
@@ -682,9 +632,10 @@ function initFloatingActions() {
                 'Express Shipping',
                 'Storage Services',
                 'Supply Chain Management',
-                'Exhibitions & Events Logistics'
+                'Exhibitions & Events Logistics',
+                'Professional Packing & Packaging',
+                'SABER Certificate Issuance',
             ];
-
             const serviceParasEn = [
                 'We handle full customs clearance procedures for individuals in coordination with authorities to ensure fast, hassle-free entry. We provide account opening on Fasah platform.',
                 'We manage complete customs clearance operations for companies, coordinating with government entities to ensure smooth cargo entry without delays. We handle account linking and setup.',
@@ -694,13 +645,13 @@ function initFloatingActions() {
                 'We provide fast domestic and international shipping via a network of trusted transport and postal companies to ensure the shortest delivery time. We manage the complete process from receipt, packaging, and documentation to delivery.',
                 'We provide accredited storage (ambient, chilled, frozen) for short or long terms for various goods, with digital management and supporting services such as repackaging and preparation for shipping, through professional partners.',
                 'We offer integrated supply chain management solutions including planning, procurement, receiving, transport, storage, and distribution, to ensure supply continuity and reduce operational costs.',
-                'We provide integrated logistics solutions for exhibitions from receipt, preparation, secure transport, and field support, with clearance (ATA Carnet), then storage or re-shipping after the event ends.'
+                'We provide integrated logistics solutions for exhibitions from receipt, preparation, secure transport, and field support, with clearance (ATA Carnet), then storage or re-shipping after the event ends.',
+                'We provide professional packaging and packing solutions that protect shipments using certified materials suitable for the nature of each item, including customized design and wrapping services.',
+                'Your first choice for issuing the Saudi SABER Certificate. We understand the vital importance of obtaining SABER Certification quickly and at minimal cost.',
             ];
-
             document.querySelectorAll('.service-card h3').forEach((h, i) => {
                 if (serviceTitlesEn[i]) h.textContent = serviceTitlesEn[i];
             });
-
             document.querySelectorAll('.service-card p').forEach((p, i) => {
                 if (serviceParasEn[i]) p.textContent = serviceParasEn[i];
             });
