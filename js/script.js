@@ -1,0 +1,1059 @@
+// ========================================
+// نخبة المنافذ - Ports Elite
+// ملف JavaScript الرئيسي - نسخة محسنة
+// ========================================
+
+document.addEventListener('DOMContentLoaded', function() {
+    initMobileMenu();
+    initSmoothScroll();
+    initFormValidation();
+    initIntersectionObserver();
+    initHeaderScroll();
+    initCounterAnimation();
+    initParallaxEffect();
+    initServiceCardsAnimation();
+    initFormAnimations();
+    initAdvancedLighting();
+    initFloatingActions();
+});
+
+// ========== قائمة الجوال ========== 
+function initMobileMenu() {
+    const hamburger = document.querySelector('.hamburger');
+    const navMenu = document.querySelector('.nav-menu');
+    const navLinks = document.querySelectorAll('.nav-menu a');
+    
+    if (hamburger) {
+        hamburger.addEventListener('click', function() {
+            navMenu.classList.toggle('active');
+            hamburger.classList.toggle('active');
+            
+            // تأثير حركي عند فتح القائمة
+            if (navMenu.classList.contains('active')) {
+                navLinks.forEach((link, index) => {
+                    link.style.opacity = '0';
+                    link.style.transform = 'translateX(-20px)';
+                    setTimeout(() => {
+                        link.style.transition = 'all 0.3s ease';
+                        link.style.opacity = '1';
+                        link.style.transform = 'translateX(0)';
+                    }, index * 100);
+                });
+            }
+        });
+    }
+    
+    navLinks.forEach(link => {
+        link.addEventListener('click', function() {
+            navMenu.classList.remove('active');
+            if (hamburger) {
+                hamburger.classList.remove('active');
+            }
+        });
+        
+        // تأثير حركي عند التمرير على الروابط
+        link.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-3px)';
+        });
+        
+        link.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+        });
+    });
+}
+
+// ========== التمرير السلس ========== 
+function initSmoothScroll() {
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                const header = document.querySelector('.header');
+                const headerOffset = header ? header.offsetHeight : 80;
+                const elementPosition = target.getBoundingClientRect().top;
+                const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+}
+
+// ========== تأثير التمرير على الهيدر ==========
+function initHeaderScroll() {
+    const header = document.querySelector('.header');
+    let lastScroll = 0;
+
+    window.addEventListener('scroll', function() {
+        const currentScroll = window.pageYOffset;
+
+        if (currentScroll > 100) {
+            header.classList.add('scrolled');
+        } else {
+            header.classList.remove('scrolled');
+        }
+
+        // إخفاء/إظهار الهيدر حسب اتجاه التمرير
+        if (currentScroll > lastScroll && currentScroll > 200) {
+            header.style.transform = 'translateY(-100%)';
+        } else {
+            header.style.transform = 'translateY(0)';
+        }
+
+        lastScroll = currentScroll;
+    });
+}
+
+// ========== التحقق من النموذج ========== 
+function initFormValidation() {
+    const form = document.querySelector('.contact-form');
+    if (form) {
+        const inputs = form.querySelectorAll('input, textarea');
+        
+        // إضافة تأثيرات تفاعلية للحقول
+        inputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.style.transform = 'scale(1.02)';
+                this.parentElement.style.transition = 'transform 0.3s ease';
+            });
+            
+            input.addEventListener('blur', function() {
+                this.parentElement.style.transform = 'scale(1)';
+            });
+        });
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.querySelector('input[name="name"]');
+            const email = document.querySelector('input[name="email"]');
+            const phone = document.querySelector('input[name="phone"]');
+            const message = document.querySelector('textarea[name="message"]');
+            
+            let isValid = true;
+            
+            // التحقق من الاسم
+            if (!name.value.trim()) {
+                showError(name, 'الرجاء إدخال اسمك');
+                isValid = false;
+            } else {
+                clearError(name);
+            }
+            
+            // التحقق من البريد الإلكتروني
+            if (!isValidEmail(email.value)) {
+                showError(email, 'الرجاء إدخال بريد إلكتروني صحيح');
+                isValid = false;
+            } else {
+                clearError(email);
+            }
+            
+            // التحقق من الهاتف
+            if (!phone.value.trim()) {
+                showError(phone, 'الرجاء إدخال رقم الهاتف');
+                isValid = false;
+            } else {
+                clearError(phone);
+            }
+            
+            // التحقق من الرسالة
+            if (!message.value.trim()) {
+                showError(message, 'الرجاء إدخال رسالتك');
+                isValid = false;
+            } else {
+                clearError(message);
+            }
+            
+            if (isValid) {
+                // تأثير نجاح
+                const submitBtn = form.querySelector('button[type="submit"]');
+                submitBtn.style.background = 'linear-gradient(135deg, #059669 0%, #10b981 100%)';
+                submitBtn.textContent = '✓ تم الإرسال بنجاح!';
+                
+                setTimeout(() => {
+                    alert('شكراً لتواصلك معنا! سنرد عليك قريباً.');
+                    form.reset();
+                    submitBtn.style.background = '';
+                    submitBtn.textContent = 'إرسال الرسالة';
+                }, 1500);
+            }
+        });
+    }
+}
+
+// ========== دالة التحقق من البريد الإلكتروني ========== 
+function isValidEmail(email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+}
+
+// ========== عرض رسالة الخطأ ========== 
+function showError(element, message) {
+    element.style.borderColor = '#ef4444';
+    element.style.animation = 'shake 0.5s ease';
+    let errorDiv = element.nextElementSibling;
+    if (!errorDiv || !errorDiv.classList.contains('error-message')) {
+        errorDiv = document.createElement('div');
+        errorDiv.className = 'error-message';
+        errorDiv.style.color = '#ef4444';
+        errorDiv.style.fontSize = '13px';
+        errorDiv.style.marginTop = '8px';
+        errorDiv.style.opacity = '0';
+        errorDiv.style.transform = 'translateY(-10px)';
+        element.parentNode.insertBefore(errorDiv, element.nextSibling);
+    }
+    errorDiv.textContent = message;
+    setTimeout(() => {
+        errorDiv.style.transition = 'all 0.3s ease';
+        errorDiv.style.opacity = '1';
+        errorDiv.style.transform = 'translateY(0)';
+    }, 10);
+}
+
+// ========== إزالة رسالة الخطأ ========== 
+function clearError(element) {
+    element.style.borderColor = '';
+    element.style.animation = '';
+    let errorDiv = element.nextElementSibling;
+    if (errorDiv && errorDiv.classList.contains('error-message')) {
+        errorDiv.style.opacity = '0';
+        errorDiv.style.transform = 'translateY(-10px)';
+        setTimeout(() => {
+            errorDiv.remove();
+        }, 300);
+    }
+}
+
+// ========== إضافة تأثير الاهتزاز ==========
+const shakeKeyframes = `
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+    20%, 40%, 60%, 80% { transform: translateX(5px); }
+}`;
+
+const style = document.createElement('style');
+style.textContent = shakeKeyframes;
+document.head.appendChild(style);
+
+// ========== مراقب التقاطع (Intersection Observer) ========== 
+function initIntersectionObserver() {
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+    
+    const observer = new IntersectionObserver(function(entries) {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('fade-in-up');
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+                observer.unobserve(entry.target);
+            }
+        });
+    }, observerOptions);
+    
+    // مراقبة جميع العناصر القابلة للحركة
+    document.querySelectorAll('.service-card, .stat-item, .about-text, .about-image, .contact-item').forEach(el => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(30px)';
+        el.style.transition = 'all 0.8s cubic-bezier(0.4, 0, 0.2, 1)';
+        observer.observe(el);
+    });
+}
+
+// ========== حركة الأرقام (Counter Animation) ==========
+function initCounterAnimation() {
+    const statItems = document.querySelectorAll('.stat-item h4');
+    
+    const counterObserver = new IntersectionObserver(function(entries) {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const target = entry.target;
+                const text = target.textContent;
+                const numbers = text.match(/[\d,]+/);
+                
+                if (numbers) {
+                    const finalValue = parseInt(numbers[0].replace(/,/g, ''));
+                    const suffix = text.replace(/[\d,]+/, '').trim();
+                    const duration = 2000;
+                    const step = finalValue / (duration / 16);
+                    let current = 0;
+                    
+                    const counter = setInterval(() => {
+                        current += step;
+                        if (current >= finalValue) {
+                            current = finalValue;
+                            clearInterval(counter);
+                        }
+                        
+                        // تنسيق الأرقام
+                        let displayValue = Math.floor(current).toLocaleString('ar-SA');
+                        if (text.includes('%')) {
+                            displayValue += '%';
+                        } else if (text.includes('/')) {
+                            displayValue = text;
+                        }
+                        
+                        target.textContent = displayValue + (suffix ? ' ' + suffix : '');
+                    }, 16);
+                }
+                
+                counterObserver.unobserve(target);
+            }
+        });
+    }, { threshold: 0.5 });
+    
+    statItems.forEach(stat => {
+        counterObserver.observe(stat);
+    });
+}
+
+// ========== تأثير Parallax ==========
+function initParallaxEffect() {
+    const hero = document.querySelector('.hero');
+    
+    if (hero) {
+        window.addEventListener('scroll', function() {
+            const scrolled = window.pageYOffset;
+            const rate = scrolled * 0.5;
+            hero.style.transform = `translateY(${rate}px)`;
+        });
+    }
+}
+
+// ========== حركة بطاقات الخدمات ==========
+function initServiceCardsAnimation() {
+    const serviceCards = document.querySelectorAll('.service-card');
+    
+    serviceCards.forEach((card, index) => {
+        card.addEventListener('mouseenter', function() {
+            // تأثير مموج للبطاقات الأخرى
+            serviceCards.forEach((otherCard, otherIndex) => {
+                if (otherIndex !== index) {
+                    const distance = Math.abs(index - otherIndex);
+                    setTimeout(() => {
+                        otherCard.style.transform = `translateY(-${5 - distance}px) scale(0.98)`;
+                        otherCard.style.transition = 'transform 0.3s ease';
+                        setTimeout(() => {
+                            otherCard.style.transform = '';
+                        }, 300);
+                    }, distance * 50);
+                }
+            });
+        });
+    });
+}
+
+// ========== حركات النموذج ==========
+function initFormAnimations() {
+    const form = document.querySelector('.contact-form');
+    
+    if (form) {
+        // حركة عند ظهور النموذج
+        const formObserver = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    form.style.animation = 'slideInLeft 0.8s ease-out';
+                    formObserver.unobserve(form);
+                }
+            });
+        }, { threshold: 0.2 });
+        
+        formObserver.observe(form);
+    }
+}
+
+// ========== تأثير الكتابة (Typing Effect) ==========
+// function initTypingEffect() {
+//     const heroTitle = document.querySelector('.hero h1');
+//     if (heroTitle) {
+//         const text = heroTitle.textContent;
+//         heroTitle.textContent = '';
+//         heroTitle.style.opacity = '1';
+//         let i = 0;
+//         const typeInterval = setInterval(() => {
+//             if (i < text.length) {
+//                 heroTitle.textContent += text.charAt(i);
+//                 i++;
+//             } else {
+//                 clearInterval(typeInterval);
+//             }
+//         }, 50);
+//     }
+// }
+
+// ========== تأثيرات الأيقونات ==========
+document.addEventListener('DOMContentLoaded', function() {
+    const icons = document.querySelectorAll('.service-icon i, .contact-item-icon i');
+    
+    icons.forEach(icon => {
+        icon.addEventListener('mouseenter', function() {
+            this.style.transform = 'scale(1.2) rotate(10deg)';
+            this.style.transition = 'all 0.3s ease';
+        });
+        
+        icon.addEventListener('mouseleave', function() {
+            this.style.transform = 'scale(1) rotate(0deg)';
+        });
+    });
+});
+
+// ========== تأثير التموج عند النقر ==========
+function createRippleEffect(element, event) {
+    const ripple = document.createElement('span');
+    const rect = element.getBoundingClientRect();
+    const size = Math.max(rect.width, rect.height);
+    const x = event.clientX - rect.left - size / 2;
+    const y = event.clientY - rect.top - size / 2;
+    
+    ripple.style.width = ripple.style.height = size + 'px';
+    ripple.style.left = x + 'px';
+    ripple.style.top = y + 'px';
+    ripple.classList.add('ripple');
+    
+    element.style.position = 'relative';
+    element.style.overflow = 'hidden';
+    element.appendChild(ripple);
+    
+    setTimeout(() => {
+        ripple.remove();
+    }, 600);
+}
+
+// إضافة تأثير التموج للأزرار
+document.addEventListener('DOMContentLoaded', function() {
+    const buttons = document.querySelectorAll('.btn');
+    
+    buttons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            createRippleEffect(this, e);
+        });
+    });
+});
+
+// إضافة CSS للتأثير
+const rippleStyle = document.createElement('style');
+rippleStyle.textContent = `
+.ripple {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.6);
+    transform: scale(0);
+    animation: ripple-animation 0.6s ease-out;
+    pointer-events: none;
+}
+
+@keyframes ripple-animation {
+    to {
+        transform: scale(4);
+        opacity: 0;
+    }
+}
+`;
+document.head.appendChild(rippleStyle);
+
+// ========== دالة مساعدة للتمرير للأعلى ========== 
+function scrollToTop() {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
+}
+
+// ========== زر العودة للأعلى ==========
+const scrollTopBtn = document.createElement('button');
+scrollTopBtn.innerHTML = '<i class="fas fa-arrow-up"></i>';
+scrollTopBtn.className = 'scroll-to-top';
+scrollTopBtn.style.cssText = `
+    position: fixed;
+    bottom: 100px;
+    right: 30px;
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, var(--purple-dark) 0%, var(--purple-medium) 100%);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    font-size: 20px;
+    cursor: pointer;
+    display: none;
+    z-index: 9998;
+    box-shadow: 0 4px 15px rgba(84, 88, 162, 0.4);
+    transition: all 0.3s ease;
+    align-items: center;
+    justify-content: center;
+`;
+
+scrollTopBtn.addEventListener('mouseenter', function() {
+    this.style.transform = 'translateY(-5px) scale(1.1)';
+    this.style.boxShadow = '0 6px 20px rgba(84, 88, 162, 0.6)';
+});
+
+scrollTopBtn.addEventListener('mouseleave', function() {
+    this.style.transform = 'translateY(0) scale(1)';
+    this.style.boxShadow = '0 4px 15px rgba(84, 88, 162, 0.4)';
+});
+
+scrollTopBtn.addEventListener('click', scrollToTop);
+scrollTopBtn.addEventListener('touchend', function(e) {
+    e.preventDefault();
+    scrollToTop();
+});
+document.body.appendChild(scrollTopBtn);
+
+window.addEventListener('scroll', function() {
+    if (window.pageYOffset > 300) {
+        scrollTopBtn.style.display = 'flex';
+    } else {
+        scrollTopBtn.style.display = 'none';
+    }
+});
+
+// ========== أزرار عائمة: تبديل الوضع واللغة (تظهر عند النزول) ==========
+function initFloatingActions() {
+    // create container for actions
+    const actionContainer = document.createElement('div');
+    actionContainer.className = 'floating-actions';
+    actionContainer.style.zIndex = '999';
+
+    // theme toggle button
+    const themeBtn = document.createElement('button');
+    themeBtn.className = 'floating-btn action-theme';
+    themeBtn.title = 'تبديل الوضع (ليلي/نهاري)';
+    themeBtn.innerHTML = '<i class="fas fa-moon"></i>';
+    themeBtn.type = 'button';
+
+    // language toggle button (use clear text label to avoid icon/text detection issues)
+    const langBtn = document.createElement('button');
+    langBtn.className = 'floating-btn action-lang';
+    langBtn.title = 'Switch language / تبديل اللغة';
+    langBtn.type = 'button';
+
+    actionContainer.appendChild(langBtn);
+    actionContainer.appendChild(themeBtn);
+    document.body.appendChild(actionContainer);
+
+    // persisted preferences
+    const savedTheme = localStorage.getItem('site-theme');
+    const savedLang = localStorage.getItem('site-lang');
+
+    if (savedTheme === 'dark') {
+        document.body.classList.add('dark-theme');
+        themeBtn.innerHTML = '<i class="fas fa-sun"></i>';
+    }
+
+    // initialize language button label based on savedLang
+    if (savedLang === 'en') {
+        langBtn.textContent = 'EN';
+    } else if (savedLang === 'ar') {
+        langBtn.textContent = 'ع';
+    } else {
+        langBtn.textContent = 'ع';
+    }
+
+    // translations: capture original Arabic text to restore later
+    const origTexts = {};
+
+    // keys and selectors to translate (limited set, can be expanded)
+    const i18nMap = {
+        nav: {
+            selector: '.nav-menu',
+            type: 'links',
+            // match number of nav links in HTML
+            en: ['Home', 'Services', 'About', 'Contact', 'Book Your Service']
+        },
+        heroTitle: { selector: '.hero h1', en: 'Your Ideal Partner in Integrated Logistics Services' },
+        heroPara: { selector: '.hero p', en: 'We provide comprehensive and reliable logistics solutions covering customs clearance, transportation, shipping, storage, and supply chain management, ensuring the highest standards of quality and speed.' },
+        heroBtn1: { selector: '.hero-buttons .btn-primary', en: 'Explore Our Services' },
+        heroBtn2: { selector: '.hero-buttons .btn-outline', en: 'Contact Us' },
+        servicesH2: { selector: '#services h2', en: 'Our Outstanding Services' },
+        statsH2: { selector: '#stats h2', en: 'Our Achievements & Numbers' },
+        aboutH2: { selector: '#about h2', en: 'About Us' },
+        contactH2: { selector: '#contact h2', en: 'Contact Us' },
+        footerTitle: { selector: '.footer-section h4', en: 'Ports Elite' }
+    };
+
+    // store originals
+    Object.keys(i18nMap).forEach(key => {
+        const item = i18nMap[key];
+        if (item.type === 'links') {
+            const nav = document.querySelector(item.selector);
+            if (nav) {
+                origTexts[key] = Array.from(nav.querySelectorAll('a')).map(a => a.textContent.trim());
+            }
+        } else {
+            const el = document.querySelector(item.selector);
+            origTexts[key] = el ? el.textContent.trim() : '';
+        }
+    });
+
+    // store original hero buttons
+    const heroButtons = document.querySelectorAll('.hero-buttons .btn');
+    origTexts.heroBtn1 = heroButtons[0] ? heroButtons[0].textContent.trim() : '';
+    origTexts.heroBtn2 = heroButtons[1] ? heroButtons[1].textContent.trim() : '';
+
+    // store original service titles and paragraphs
+    origTexts.servicesTitles = Array.from(document.querySelectorAll('.service-card h3')).map(h => h.textContent.trim());
+    origTexts.servicesParas = Array.from(document.querySelectorAll('.service-card p')).map(p => p.textContent.trim());
+    origTexts.serviceButtons = Array.from(document.querySelectorAll('.service-card .btn')).map(btn => btn.textContent.trim());
+
+    // store original form labels
+    origTexts.name = (document.querySelector('label[for="name"]') || {}).textContent || '';
+    origTexts.email = (document.querySelector('label[for="email"]') || {}).textContent || '';
+    origTexts.phone = (document.querySelector('label[for="phone"]') || {}).textContent || '';
+    origTexts.serviceLabel = (document.querySelector('label[for="service"]') || {}).textContent || '';
+    origTexts.message = (document.querySelector('label[for="message"]') || {}).textContent || '';
+    
+    // store original form placeholders
+    origTexts.namePlaceholder = (document.querySelector('input[name="name"]') || {}).placeholder || '';
+    origTexts.emailPlaceholder = (document.querySelector('input[name="email"]') || {}).placeholder || '';
+    origTexts.phonePlaceholder = (document.querySelector('input[name="phone"]') || {}).placeholder || '';
+    origTexts.messagePlaceholder = (document.querySelector('textarea[name="message"]') || {}).placeholder || '';
+    
+    // store original form select options
+    origTexts.serviceOptions = Array.from(document.querySelectorAll('select[name="service"] option')).map(opt => opt.textContent.trim());
+    
+    // store contact info headers
+    origTexts.contactHeaders = Array.from(document.querySelectorAll('.contact-item h4')).map(h => h.textContent.trim());
+    
+    // store stats labels
+    origTexts.statsLabels = Array.from(document.querySelectorAll('.stat-item p')).map(p => p.textContent.trim());
+    
+    // store about section
+    const aboutH3 = document.querySelector('.about-text h3');
+    origTexts.aboutH3 = aboutH3 ? aboutH3.textContent.trim() : '';
+    origTexts.aboutParas = Array.from(document.querySelectorAll('.about-text p')).map(p => p.textContent.trim());
+    const aboutBtn = document.querySelector('.about-text .btn');
+    origTexts.aboutBtn = aboutBtn ? aboutBtn.textContent.trim() : '';
+    
+    // store footer sections
+    const footerSections = document.querySelectorAll('.footer-section');
+    origTexts.footerTitle = (footerSections[0] && footerSections[0].querySelector('h4')) ? footerSections[0].querySelector('h4').textContent.trim() : '';
+    origTexts.footerDesc = (footerSections[0] && footerSections[0].querySelector('p')) ? footerSections[0].querySelector('p').textContent.trim() : '';
+    origTexts.footerSections = Array.from(document.querySelectorAll('.footer-section h4')).slice(1).map(h => h.textContent.trim());
+    origTexts.footerLinks = Array.from(document.querySelectorAll('.footer-section ul')).map(ul => 
+        Array.from(ul.querySelectorAll('a')).map(a => a.textContent.trim())
+    );
+    origTexts.footerBottom = (document.querySelector('.footer-bottom p') || {}).textContent || '';
+
+    // proofread English translations (minor adjustments done in the strings above)
+    // Handler to switch language
+    function setLanguage(lang) {
+        if (lang === 'en') {
+            // nav links
+            if (i18nMap.nav) {
+                const nav = document.querySelector(i18nMap.nav.selector);
+                if (nav) {
+                    const links = nav.querySelectorAll('a');
+                    links.forEach((a, idx) => {
+                        if (i18nMap.nav.en[idx]) a.textContent = i18nMap.nav.en[idx];
+                    });
+                }
+            }
+
+            Object.keys(i18nMap).forEach(key => {
+                if (key === 'nav') return;
+                const item = i18nMap[key];
+                // Handle multiple elements for hero buttons
+                if (key === 'heroBtn1' || key === 'heroBtn2') {
+                    const elements = document.querySelectorAll(item.selector);
+                    elements.forEach(el => {
+                        if (el && item.en) el.textContent = item.en;
+                    });
+                } else {
+                    const el = document.querySelector(item.selector);
+                    if (el && item.en) el.textContent = item.en;
+                }
+            });
+
+            // translate service cards (titles and descriptions) - 9 services total
+            const serviceTitlesEn = [
+                'Personal Customs Clearance',
+                'Corporate Customs Clearance',
+                'Transportation & Distribution',
+                'Secure Transport',
+                'International Shipping',
+                'Express Shipping',
+                'Storage Services',
+                'Supply Chain Management',
+                'Exhibitions & Events Logistics'
+            ];
+
+            const serviceParasEn = [
+                'We handle full customs clearance procedures for individuals in coordination with authorities to ensure fast, hassle-free entry. We provide account opening on Fasah platform.',
+                'We manage complete customs clearance operations for companies, coordinating with government entities to ensure smooth cargo entry without delays. We handle account linking and setup.',
+                'We manage door-to-door transport efficiently and reliably within the Kingdom and beyond, covering Riyadh, Eastern Province and intercity/regional routes.',
+                'We provide secure transport for sensitive shipments inside the Kingdom, whether to ports or to clients, in cooperation with certified security and protection partners.',
+                'We offer international sea, air and land shipping solutions from and to various countries worldwide, with complete management from receipt to delivery, including document preparation, booking, and insurance upon request.',
+                'We provide fast domestic and international shipping via a network of trusted transport and postal companies to ensure the shortest delivery time. We manage the complete process from receipt, packaging, and documentation to delivery.',
+                'We provide accredited storage (ambient, chilled, frozen) for short or long terms for various goods, with digital management and supporting services such as repackaging and preparation for shipping, through professional partners.',
+                'We offer integrated supply chain management solutions including planning, procurement, receiving, transport, storage, and distribution, to ensure supply continuity and reduce operational costs.',
+                'We provide integrated logistics solutions for exhibitions from receipt, preparation, secure transport, and field support, with clearance (ATA Carnet), then storage or re-shipping after the event ends.'
+            ];
+
+            document.querySelectorAll('.service-card h3').forEach((h, i) => {
+                if (serviceTitlesEn[i]) h.textContent = serviceTitlesEn[i];
+            });
+
+            document.querySelectorAll('.service-card p').forEach((p, i) => {
+                if (serviceParasEn[i]) p.textContent = serviceParasEn[i];
+            });
+
+            // translate service card buttons
+            document.querySelectorAll('.service-card .btn').forEach((btn, i) => {
+                btn.textContent = 'Book Now';
+            });
+
+            // translate contact info headers
+            const contactHeadersEn = ['Address', 'Phone', 'WhatsApp', 'Email', 'Working Hours'];
+            document.querySelectorAll('.contact-item h4').forEach((h, i) => {
+                if (contactHeadersEn[i]) h.textContent = contactHeadersEn[i];
+            });
+
+            // translate contact info content
+            const contactContentEn = [
+                'Riyadh | Dammam | Jeddah | Batha Port<br>Kingdom of Saudi Arabia',
+                'Saturday - Thursday: 8:00 AM - 6:00 PM<br>Friday: Closed'
+            ];
+            const contactItems = document.querySelectorAll('.contact-item');
+            if (contactItems.length >= 5) {
+                const addressP = contactItems[0].querySelector('p');
+                if (addressP) addressP.innerHTML = contactContentEn[0];
+                const hoursP = contactItems[4].querySelector('p');
+                if (hoursP) hoursP.innerHTML = contactContentEn[1];
+            }
+
+            // translate form labels
+            const name = document.querySelector('label[for="name"]'); if (name) name.textContent = 'Full Name';
+            const email = document.querySelector('label[for="email"]'); if (email) email.textContent = 'Email';
+            const phone = document.querySelector('label[for="phone"]'); if (phone) phone.textContent = 'Phone Number';
+            const service = document.querySelector('label[for="service"]'); if (service) service.textContent = 'Service Type (Optional)';
+            const message = document.querySelector('label[for="message"]'); if (message) message.textContent = 'Message';
+            
+            // translate form placeholders
+            const nameInput = document.querySelector('input[name="name"]'); if (nameInput) nameInput.placeholder = 'Enter your full name';
+            const emailInput = document.querySelector('input[name="email"]'); if (emailInput) emailInput.placeholder = 'Enter your email';
+            const phoneInput = document.querySelector('input[name="phone"]'); if (phoneInput) phoneInput.placeholder = 'Enter your phone number';
+            const messageTextarea = document.querySelector('textarea[name="message"]'); if (messageTextarea) messageTextarea.placeholder = 'Enter your message here...';
+            
+            // translate form select options
+            const serviceSelect = document.querySelector('select[name="service"]');
+            if (serviceSelect) {
+                const optionsEn = ['Select Service Type', 'Customs Clearance', 'Transportation & Distribution', 'International Shipping', 'Storage', 'Supply Chain Management', 'Other'];
+                serviceSelect.querySelectorAll('option').forEach((opt, i) => {
+                    if (optionsEn[i]) opt.textContent = optionsEn[i];
+                });
+            }
+            
+            const submitBtn = document.querySelector('.contact-form button[type="submit"]'); if (submitBtn) submitBtn.textContent = 'Send Message';
+
+            // translate stats section labels
+            const statsLabelsEn = [
+                'Annual customs clearance operations',
+                'Institutional and individual clients',
+                'Customer satisfaction rate',
+                'Round-the-clock technical support',
+                'Countries in our network',
+                'Years of experience'
+            ];
+            document.querySelectorAll('.stat-item p').forEach((p, i) => {
+                if (statsLabelsEn[i]) p.textContent = statsLabelsEn[i];
+            });
+
+            // translate about section
+            const aboutH3 = document.querySelector('.about-text h3');
+            if (aboutH3) aboutH3.textContent = 'Your Trusted Partner for Success';
+            const aboutParasEn = [
+                'Ports Elite is the strongest customs clearance and logistics platform in Saudi Arabia and the Middle East. We excel with a professional team and deep expertise in logistics and customs clearance.',
+                'With us, the decision is the difference between experience and result. At Ports Elite, we don\'t experiment... we deliver. We ensure your shipment arrives as planned—fast, accurate, and professional.',
+                'If your shipment is ready to move—we\'re ready to execute. We provide integrated solutions covering all aspects of your logistics needs, ensuring the highest standards of quality and reliability.'
+            ];
+            document.querySelectorAll('.about-text p').forEach((p, i) => {
+                if (aboutParasEn[i]) p.textContent = aboutParasEn[i];
+            });
+            const aboutBtn = document.querySelector('.about-text .btn');
+            if (aboutBtn) aboutBtn.textContent = 'Contact Us Now';
+
+            // translate footer sections
+            const footerSections = document.querySelectorAll('.footer-section');
+            if (footerSections.length >= 4) {
+                // First section - company name and description
+                const footerH4First = footerSections[0].querySelector('h4');
+                if (footerH4First) footerH4First.textContent = 'Ports Elite';
+                const footerDesc = footerSections[0].querySelector('p');
+                if (footerDesc) footerDesc.textContent = 'The strongest customs clearance and integrated logistics platform in Saudi Arabia and the Middle East.';
+                
+                // Second section - Services
+                if (footerSections[1].querySelector('h4')) {
+                    footerSections[1].querySelector('h4').textContent = 'Services';
+                    const servicesLinksEn = ['Customs Clearance', 'Transportation & Distribution', 'International Shipping', 'Storage', 'Supply Chain Management'];
+                    footerSections[1].querySelectorAll('a').forEach((a, i) => {
+                        if (servicesLinksEn[i]) a.textContent = servicesLinksEn[i];
+                    });
+                }
+                
+                // Third section - Quick Links
+                if (footerSections[2].querySelector('h4')) {
+                    footerSections[2].querySelector('h4').textContent = 'Quick Links';
+                    const quickLinksEn = ['Home', 'About Us', 'Our Services', 'Contact Us'];
+                    footerSections[2].querySelectorAll('a').forEach((a, i) => {
+                        if (quickLinksEn[i]) a.textContent = quickLinksEn[i];
+                    });
+                }
+                
+                // Fourth section - Contact Info
+                if (footerSections[3].querySelector('h4')) {
+                    footerSections[3].querySelector('h4').textContent = 'Contact Information';
+                }
+            }
+            
+            const footerBottom = document.querySelector('.footer-bottom p');
+            if (footerBottom) footerBottom.textContent = '© 2024 Ports Elite. All rights reserved.';
+
+            localStorage.setItem('site-lang', 'en');
+            langBtn.innerHTML = 'EN';
+            document.documentElement.lang = 'en';
+            document.body.setAttribute('dir', 'ltr');
+        } else {
+            // restore original Arabic
+            if (i18nMap.nav) {
+                const nav = document.querySelector(i18nMap.nav.selector);
+                if (nav && origTexts.nav) {
+                    const links = nav.querySelectorAll('a');
+                    links.forEach((a, idx) => {
+                        if (origTexts.nav[idx]) a.textContent = origTexts.nav[idx];
+                    });
+                }
+            }
+
+            Object.keys(i18nMap).forEach(key => {
+                if (key === 'nav') return;
+                const item = i18nMap[key];
+                // Handle multiple elements for hero buttons
+                if (key === 'heroBtn1' || key === 'heroBtn2') {
+                    const elements = document.querySelectorAll(item.selector);
+                    elements.forEach((el, idx) => {
+                        const origKey = key === 'heroBtn1' ? 'heroBtn1' : 'heroBtn2';
+                        if (el && origTexts[origKey]) el.textContent = origTexts[origKey];
+                    });
+                } else {
+                    const el = document.querySelector(item.selector);
+                    if (el && origTexts[key]) el.textContent = origTexts[key];
+                }
+            });
+
+            // restore services
+            document.querySelectorAll('.service-card h3').forEach((h, i) => {
+                if (origTexts.servicesTitles && origTexts.servicesTitles[i]) h.textContent = origTexts.servicesTitles[i];
+            });
+
+            document.querySelectorAll('.service-card p').forEach((p, i) => {
+                if (origTexts.servicesParas && origTexts.servicesParas[i]) p.textContent = origTexts.servicesParas[i];
+            });
+
+            // restore service buttons
+            document.querySelectorAll('.service-card .btn').forEach((btn, i) => {
+                if (origTexts.serviceButtons && origTexts.serviceButtons[i]) btn.textContent = origTexts.serviceButtons[i];
+            });
+
+            // restore contact info headers
+            document.querySelectorAll('.contact-item h4').forEach((h, i) => {
+                if (origTexts.contactHeaders && origTexts.contactHeaders[i]) h.textContent = origTexts.contactHeaders[i];
+            });
+
+            // restore contact info content
+            const contactItems = document.querySelectorAll('.contact-item');
+            if (contactItems.length >= 5 && origTexts.contactHeaders) {
+                const addressP = contactItems[0].querySelector('p');
+                if (addressP) addressP.innerHTML = 'الرياض | الدمام | جدة | منفذ البطحاء<br>المملكة العربية السعودية';
+                const hoursP = contactItems[4].querySelector('p');
+                if (hoursP) hoursP.innerHTML = 'السبت - الخميس: 8:00 صباحاً - 6:00 مساءً<br>الجمعة: مغلق';
+            }
+
+            // restore form labels
+            const nameLabel = document.querySelector('label[for="name"]'); if (nameLabel && origTexts.name) nameLabel.textContent = origTexts.name;
+            const emailLabel = document.querySelector('label[for="email"]'); if (emailLabel && origTexts.email) emailLabel.textContent = origTexts.email;
+            const phoneLabel = document.querySelector('label[for="phone"]'); if (phoneLabel && origTexts.phone) phoneLabel.textContent = origTexts.phone;
+            const serviceLabel = document.querySelector('label[for="service"]'); if (serviceLabel && origTexts.serviceLabel) serviceLabel.textContent = origTexts.serviceLabel;
+            const messageLabel = document.querySelector('label[for="message"]'); if (messageLabel && origTexts.message) messageLabel.textContent = origTexts.message;
+
+            // restore form placeholders
+            const nameInput = document.querySelector('input[name="name"]');
+            if (nameInput && origTexts.namePlaceholder) nameInput.placeholder = origTexts.namePlaceholder;
+            const emailInput = document.querySelector('input[name="email"]');
+            if (emailInput && origTexts.emailPlaceholder) emailInput.placeholder = origTexts.emailPlaceholder;
+            const phoneInput = document.querySelector('input[name="phone"]');
+            if (phoneInput && origTexts.phonePlaceholder) phoneInput.placeholder = origTexts.phonePlaceholder;
+            const messageTextarea = document.querySelector('textarea[name="message"]');
+            if (messageTextarea && origTexts.messagePlaceholder) messageTextarea.placeholder = origTexts.messagePlaceholder;
+
+            // restore form select options
+            const serviceSelect = document.querySelector('select[name="service"]');
+            if (serviceSelect && origTexts.serviceOptions) {
+                serviceSelect.querySelectorAll('option').forEach((opt, i) => {
+                    if (origTexts.serviceOptions[i]) opt.textContent = origTexts.serviceOptions[i];
+                });
+            }
+
+            // restore stats labels
+            document.querySelectorAll('.stat-item p').forEach((p, i) => {
+                if (origTexts.statsLabels && origTexts.statsLabels[i]) p.textContent = origTexts.statsLabels[i];
+            });
+
+            // restore about section
+            const aboutH3 = document.querySelector('.about-text h3');
+            if (aboutH3 && origTexts.aboutH3) aboutH3.textContent = origTexts.aboutH3;
+            document.querySelectorAll('.about-text p').forEach((p, i) => {
+                if (origTexts.aboutParas && origTexts.aboutParas[i]) p.textContent = origTexts.aboutParas[i];
+            });
+            const aboutBtn = document.querySelector('.about-text .btn');
+            if (aboutBtn && origTexts.aboutBtn) aboutBtn.textContent = origTexts.aboutBtn;
+
+            // restore footer sections
+            const footerSections = document.querySelectorAll('.footer-section');
+            if (footerSections.length >= 4) {
+                // Restore first section
+                const footerH4First = footerSections[0].querySelector('h4');
+                if (footerH4First && origTexts.footerTitle) footerH4First.textContent = origTexts.footerTitle;
+                const footerDesc = footerSections[0].querySelector('p');
+                if (footerDesc && origTexts.footerDesc) footerDesc.textContent = origTexts.footerDesc;
+                
+                if (origTexts.footerSections && origTexts.footerSections.length >= 3) {
+                    footerSections[1].querySelector('h4').textContent = origTexts.footerSections[0];
+                    footerSections[2].querySelector('h4').textContent = origTexts.footerSections[1];
+                    footerSections[3].querySelector('h4').textContent = origTexts.footerSections[2];
+                }
+                
+                if (origTexts.footerLinks && origTexts.footerLinks.length >= 2) {
+                    footerSections[1].querySelectorAll('a').forEach((a, i) => {
+                        if (origTexts.footerLinks[1] && origTexts.footerLinks[1][i]) a.textContent = origTexts.footerLinks[1][i];
+                    });
+                    footerSections[2].querySelectorAll('a').forEach((a, i) => {
+                        if (origTexts.footerLinks[2] && origTexts.footerLinks[2][i]) a.textContent = origTexts.footerLinks[2][i];
+                    });
+                }
+            }
+            
+            const footerBottom = document.querySelector('.footer-bottom p');
+            if (footerBottom && origTexts.footerBottom) footerBottom.textContent = origTexts.footerBottom;
+
+            // submit
+            const submitBtn = document.querySelector('.contact-form button[type="submit"]'); if (submitBtn) submitBtn.textContent = 'إرسال الرسالة';
+
+            localStorage.setItem('site-lang', 'ar');
+            langBtn.innerHTML = 'ع';
+            document.documentElement.lang = 'ar';
+            document.body.setAttribute('dir', 'rtl');
+        }
+    }
+
+    // set initial language
+    if (savedLang === 'en') {
+        setLanguage('en');
+    } else if (savedLang === 'ar') {
+        setLanguage('ar');
+    } else {
+        // default: Arabic
+        langBtn.textContent = 'ع';
+        localStorage.setItem('site-lang', 'ar');
+        document.documentElement.lang = 'ar';
+        document.body.setAttribute('dir', 'rtl');
+    }
+
+    // theme toggle click (defensive)
+    try {
+        themeBtn.addEventListener('click', function() {
+            try {
+                document.body.classList.toggle('dark-theme');
+                const isDark = document.body.classList.contains('dark-theme');
+                themeBtn.innerHTML = isDark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+                localStorage.setItem('site-theme', isDark ? 'dark' : 'light');
+            } catch (innerErr) {
+                console.error('Error toggling theme:', innerErr);
+            }
+        });
+    } catch (err) {
+        console.error('Failed to attach theme toggle listener:', err);
+    }
+
+    // language toggle click (defensive)
+    try {
+        langBtn.addEventListener('click', function() {
+            try {
+                const current = localStorage.getItem('site-lang') || 'ar';
+                const next = current === 'en' ? 'ar' : 'en';
+                setLanguage(next);
+            } catch (innerErr) {
+                console.error('Error toggling language:', innerErr);
+            }
+        });
+    } catch (err) {
+        console.error('Failed to attach language toggle listener:', err);
+    }
+
+    // show buttons initially (always visible in corner)
+    actionContainer.classList.add('visible');
+    
+    // Optional: hide/show on scroll (commented out - buttons always visible)
+    // window.addEventListener('scroll', function() {
+    //     if (window.pageYOffset > 300) {
+    //         actionContainer.classList.add('visible');
+    //     } else {
+    //         actionContainer.classList.remove('visible');
+    //     }
+    // });
+}
+
+// ========== تأثير الإضاءة على الأزرار ==========
+document.querySelectorAll('.btn').forEach(btn => {
+    btn.addEventListener('mousemove', function(e) {
+        const rect = this.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        this.style.setProperty('--mouse-x', x + 'px');
+        this.style.setProperty('--mouse-y', y + 'px');
+    });
+});
+
+
+// ========== تأثير الإضاءة المتقدم ==========
+function initAdvancedLighting() {
+    const cards = document.querySelectorAll('.service-card, .stat-item');
+    
+    cards.forEach(card => {
+        card.addEventListener('mousemove', function(e) {
+            const rect = this.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            const xPercent = (x / rect.width) * 100;
+            const yPercent = (y / rect.height) * 100;
+            
+            this.style.setProperty('--light-x', xPercent + '%');
+            this.style.setProperty('--light-y', yPercent + '%');
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.setProperty('--light-x', '50%');
+            this.style.setProperty('--light-y', '50%');
+        });
+    });
+}
+
+// ========== تحسين الأداء والتحميل ==========
+window.addEventListener('load', function() {
+    document.body.classList.add('loaded');
+    // تحسين الأداء بتأخير التأثيرات الثقيلة
+    setTimeout(() => {
+        document.querySelectorAll('[style*="animation"]').forEach(el => {
+            el.style.willChange = 'auto';
+        });
+    }, 2000);
+});
