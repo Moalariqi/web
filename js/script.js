@@ -583,6 +583,10 @@ function initHeaderActions() {
     const heroButtons = document.querySelectorAll('.hero-buttons .btn');
     origTexts.heroBtn1 = heroButtons[0] ? heroButtons[0].textContent.trim() : '';
     origTexts.heroBtn2 = heroButtons[1] ? heroButtons[1].textContent.trim() : '';
+    
+    // store original header CTA button
+    const headerCTA = document.querySelector('.btn-cta');
+    origTexts.headerCTA = headerCTA ? headerCTA.textContent.trim() : '';
 
     // store original service titles and paragraphs
     origTexts.servicesTitles = Array.from(document.querySelectorAll('.service-card h3')).map(h => h.textContent.trim());
@@ -691,6 +695,10 @@ function initHeaderActions() {
                 if (serviceParasEn[i]) p.textContent = serviceParasEn[i];
             });
 
+            // translate header CTA button
+            const headerCTA = document.querySelector('.btn-cta');
+            if (headerCTA) headerCTA.textContent = 'Book Now';
+            
             // translate service card buttons
             document.querySelectorAll('.service-card .btn').forEach((btn, i) => {
                 btn.textContent = 'Book Now';
@@ -842,6 +850,10 @@ function initHeaderActions() {
             document.querySelectorAll('.service-card p').forEach((p, i) => {
                 if (origTexts.servicesParas && origTexts.servicesParas[i]) p.textContent = origTexts.servicesParas[i];
             });
+
+            // restore header CTA button
+            const headerCTA = document.querySelector('.btn-cta');
+            if (headerCTA && origTexts.headerCTA) headerCTA.textContent = origTexts.headerCTA;
 
             // restore service buttons
             document.querySelectorAll('.service-card .btn').forEach((btn, i) => {

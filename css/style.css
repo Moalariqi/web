@@ -329,6 +329,20 @@ body.dark-theme .header-btn:hover i {
     color: var(--white);
 }
 
+body.dark-theme .hamburger {
+    background: linear-gradient(135deg, rgba(109, 114, 181, 0.12) 0%, rgba(142, 147, 200, 0.15) 100%);
+    border-radius: 8px;
+    padding: 8px;
+}
+
+body.dark-theme .hamburger span {
+    background: linear-gradient(90deg, var(--purple-light) 0%, var(--purple-accent) 100%);
+}
+
+body.dark-theme .hamburger:hover {
+    background: linear-gradient(135deg, rgba(109, 114, 181, 0.2) 0%, rgba(142, 147, 200, 0.25) 100%);
+}
+
 .header-btn i {
     font-size: 18px;
 }
