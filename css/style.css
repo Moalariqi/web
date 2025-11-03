@@ -221,10 +221,13 @@ button {
     -webkit-backdrop-filter: blur(30px) saturate(180%);
     box-shadow: 0 4px 24px rgba(84, 88, 162, 0.06), 0 1px 0 rgba(255, 255, 255, 0.8) inset;
     border-bottom: 1px solid rgba(84, 88, 162, 0.08);
-    position: sticky;
+    position: fixed;
     top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
     z-index: 1000;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .header.scrolled {
@@ -1351,11 +1354,6 @@ section h2::after {
     z-index: 1;
 }
 
-.contact-item:hover .contact-item-icon {
-    transform: scale(1.2) rotate(5deg);
-    -webkit-text-fill-color: transparent;
-}
-
 .contact-item h4 {
     font-size: 19px;
     font-weight: 600;
@@ -2401,19 +2399,11 @@ body.dark-theme .contact-item a {
     color: var(--purple-accent);
 }
 
-body.dark-theme .contact-item a:hover {
-    color: var(--purple-light);
-}
-
 body.dark-theme .contact-item-icon {
     background: linear-gradient(135deg, var(--purple-light) 0%, var(--purple-accent) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-}
-
-body.dark-theme .contact-item:hover .contact-item-icon {
-    -webkit-text-fill-color: transparent;
 }
 
 body.dark-theme .contact-form {
@@ -2446,6 +2436,19 @@ body.dark-theme .form-group select:focus {
 body.dark-theme .form-group input::placeholder,
 body.dark-theme .form-group textarea::placeholder {
     color: #94A3B8;
+}
+
+/* ========== RTL Placeholder Direction for Arabic ========== */
+body[dir="rtl"] input::placeholder,
+body[dir="rtl"] textarea::placeholder {
+    text-align: right;
+    direction: rtl;
+}
+
+body[dir="ltr"] input::placeholder,
+body[dir="ltr"] textarea::placeholder {
+    text-align: left;
+    direction: ltr;
 }
 
 body.dark-theme .footer {

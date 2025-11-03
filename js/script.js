@@ -99,7 +99,10 @@ function initHeaderScroll() {
         }
 
         // إخفاء/إظهار الهيدر حسب اتجاه التمرير
-        if (currentScroll > lastScroll && currentScroll > 200) {
+        if (currentScroll <= 0) {
+            // At the top - always show header
+            header.style.transform = 'translateY(0)';
+        } else if (currentScroll > lastScroll && currentScroll > 200) {
             // Scrolling down - hide header
             header.style.transform = 'translateY(-100%)';
         } else if (currentScroll < lastScroll) {
@@ -107,7 +110,7 @@ function initHeaderScroll() {
             header.style.transform = 'translateY(0)';
         }
 
-        lastScroll = currentScroll;
+        lastScroll = currentScroll <= 0 ? 0 : currentScroll;
     });
 }
 
