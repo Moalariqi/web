@@ -309,7 +309,8 @@ button {
     opacity: 1;
 }
 
-.header-btn i {
+.header-btn i,
+.header-btn .lang-text {
     position: relative;
     z-index: 1;
     transition: all 0.3s ease;
@@ -350,6 +351,8 @@ body.dark-theme .hamburger:hover {
 .lang-toggle-btn .lang-text {
     font-size: 17px;
     font-weight: 700;
+    position: relative;
+    z-index: 1;
 }
 
 .btn-cta {
@@ -363,8 +366,8 @@ body.dark-theme .hamburger:hover {
     box-shadow: 0 6px 18px rgba(84, 88, 162, 0.35), 0 3px 8px rgba(84, 88, 162, 0.15) !important;
     border: none !important;
     position: relative;
-    overflow: hidden;
     letter-spacing: 0.3px;
+    transition: all 0.3s ease !important;
 }
 
 @media (max-width: 1200px) {
@@ -380,21 +383,9 @@ body.dark-theme .hamburger:hover {
     }
 }
 
-.btn-cta::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, #3d4178 0%, #5458a2 100%);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.btn-cta:hover::before {
-    opacity: 1;
-}
-
 .btn-cta:hover {
     color: var(--white) !important;
+    background: linear-gradient(135deg, #3d4178 0%, #5458a2 100%) !important;
     transform: translateY(-2px) !important;
     box-shadow: 0 8px 24px rgba(84, 88, 162, 0.45), 0 4px 12px rgba(84, 88, 162, 0.25) !important;
 }
@@ -1356,10 +1347,13 @@ section h2::after {
     background-clip: text;
     flex-shrink: 0;
     transition: transform var(--transition-base);
+    position: relative;
+    z-index: 1;
 }
 
 .contact-item:hover .contact-item-icon {
     transform: scale(1.2) rotate(5deg);
+    -webkit-text-fill-color: transparent;
 }
 
 .contact-item h4 {
@@ -2403,6 +2397,25 @@ body.dark-theme .contact-item p {
     color: #CBD5E1;
 }
 
+body.dark-theme .contact-item a {
+    color: var(--purple-accent);
+}
+
+body.dark-theme .contact-item a:hover {
+    color: var(--purple-light);
+}
+
+body.dark-theme .contact-item-icon {
+    background: linear-gradient(135deg, var(--purple-light) 0%, var(--purple-accent) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+body.dark-theme .contact-item:hover .contact-item-icon {
+    -webkit-text-fill-color: transparent;
+}
+
 body.dark-theme .contact-form {
     background: rgba(30, 41, 59, 0.6);
     backdrop-filter: blur(10px);
@@ -2538,7 +2551,8 @@ body.dark-theme .btn-outline:hover {
     border-color: rgba(84, 88, 162, 0.2);
 }
 
-.header-btn:hover i {
+.header-btn:hover i,
+.header-btn:hover .lang-text {
     color: var(--white);
     transform: scale(1.08);
 }

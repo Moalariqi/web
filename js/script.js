@@ -100,8 +100,10 @@ function initHeaderScroll() {
 
         // إخفاء/إظهار الهيدر حسب اتجاه التمرير
         if (currentScroll > lastScroll && currentScroll > 200) {
+            // Scrolling down - hide header
             header.style.transform = 'translateY(-100%)';
-        } else {
+        } else if (currentScroll < lastScroll) {
+            // Scrolling up - show header
             header.style.transform = 'translateY(0)';
         }
 
