@@ -19,21 +19,14 @@
     <!-- ========== شريط التنقل ========== -->
     <header class="header">
         <div class="header-container">
-            <div class="header-top-actions">
-                <a href="tel:+966558868787" class="contact-btn phone-btn" title="اتصل بنا">
-                    <i class="fas fa-phone"></i>
-                    <span>+966 55 886 8787</span>
-                </a>
-                <a href="https://wa.me/966556684992" class="contact-btn whatsapp-btn" title="واتساب">
-                    <i class="fab fa-whatsapp"></i>
-                    <span>واتساب</span>
-                </a>
-            </div>
+            <!-- Logo on the left -->
             <div class="logo">
-                <img src="images/logo.png" alt="شعار نخبة المنافذ" style="height: 90px;">
+                <img src="images/logo.png" alt="شعار نخبة المنافذ">
             </div>
-            <nav>
-                <button class="hamburger">
+            
+            <!-- Navigation in center -->
+            <nav class="main-nav">
+                <button class="hamburger" aria-label="قائمة التنقل">
                     <span></span>
                     <span></span>
                     <span></span>
@@ -41,12 +34,21 @@
                 <ul class="nav-menu">
                     <li><a href="#home">الرئيسية</a></li>
                     <li><a href="#services">خدماتنا</a></li>
-                    
                     <li><a href="#about">من نحن</a></li>
                     <li><a href="#contact">اتصل بنا</a></li>
-                    <li><a href="#contact" class="btn btn-primary">احجز خدمتك الآن</a></li>
                 </ul>
             </nav>
+            
+            <!-- Action buttons on the right -->
+            <div class="header-actions">
+                <a href="#contact" class="btn btn-primary btn-cta">احجز الآن</a>
+                <button class="header-btn theme-toggle-btn" title="تبديل الوضع (ليلي/نهاري)" type="button" aria-label="تبديل الوضع">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <button class="header-btn lang-toggle-btn" title="Switch language / تبديل اللغة" type="button" aria-label="تبديل اللغة">
+                    <span class="lang-text">ع</span>
+                </button>
+            </div>
         </div>
     </header>
 

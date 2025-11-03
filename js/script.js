@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initServiceCardsAnimation();
     initFormAnimations();
     initAdvancedLighting();
+    initHeaderActions();
     initFloatingActions();
 });
 
@@ -515,29 +516,13 @@ window.addEventListener('scroll', function() {
     }
 });
 
-// ========== أزرار عائمة: تبديل الوضع واللغة (تظهر عند النزول) ==========
-function initFloatingActions() {
-    // create container for actions
-    const actionContainer = document.createElement('div');
-    actionContainer.className = 'floating-actions';
-    actionContainer.style.zIndex = '999';
+// ========== أزرار الهيدر: تبديل الوضع واللغة ==========
+function initHeaderActions() {
+    // Get header buttons
+    const themeBtn = document.querySelector('.theme-toggle-btn');
+    const langBtn = document.querySelector('.lang-toggle-btn');
 
-    // theme toggle button
-    const themeBtn = document.createElement('button');
-    themeBtn.className = 'floating-btn action-theme';
-    themeBtn.title = 'تبديل الوضع (ليلي/نهاري)';
-    themeBtn.innerHTML = '<i class="fas fa-moon"></i>';
-    themeBtn.type = 'button';
-
-    // language toggle button (use clear text label to avoid icon/text detection issues)
-    const langBtn = document.createElement('button');
-    langBtn.className = 'floating-btn action-lang';
-    langBtn.title = 'Switch language / تبديل اللغة';
-    langBtn.type = 'button';
-
-    actionContainer.appendChild(langBtn);
-    actionContainer.appendChild(themeBtn);
-    document.body.appendChild(actionContainer);
+    if (!themeBtn || !langBtn) return;
 
     // persisted preferences
     const savedTheme = localStorage.getItem('site-theme');
@@ -549,12 +534,13 @@ function initFloatingActions() {
     }
 
     // initialize language button label based on savedLang
+    const langText = langBtn.querySelector('.lang-text');
     if (savedLang === 'en') {
-        langBtn.textContent = 'EN';
+        if (langText) langText.textContent = 'EN';
     } else if (savedLang === 'ar') {
-        langBtn.textContent = 'ع';
+        if (langText) langText.textContent = 'ع';
     } else {
-        langBtn.textContent = 'ع';
+        if (langText) langText.textContent = 'ع';
     }
 
     // translations: capture original Arabic text to restore later
@@ -817,7 +803,7 @@ function initFloatingActions() {
             if (footerBottom) footerBottom.textContent = '© 2024 Ports Elite. All rights reserved.';
 
             localStorage.setItem('site-lang', 'en');
-            langBtn.innerHTML = 'EN';
+            if (langText) langText.textContent = 'EN';
             document.documentElement.lang = 'en';
             document.body.setAttribute('dir', 'ltr');
         } else {
@@ -947,7 +933,7 @@ function initFloatingActions() {
             const submitBtn = document.querySelector('.contact-form button[type="submit"]'); if (submitBtn) submitBtn.textContent = 'إرسال الرسالة';
 
             localStorage.setItem('site-lang', 'ar');
-            langBtn.innerHTML = 'ع';
+            if (langText) langText.textContent = 'ع';
             document.documentElement.lang = 'ar';
             document.body.setAttribute('dir', 'rtl');
         }
@@ -960,7 +946,7 @@ function initFloatingActions() {
         setLanguage('ar');
     } else {
         // default: Arabic
-        langBtn.textContent = 'ع';
+        if (langText) langText.textContent = 'ع';
         localStorage.setItem('site-lang', 'ar');
         document.documentElement.lang = 'ar';
         document.body.setAttribute('dir', 'rtl');
@@ -996,18 +982,42 @@ function initFloatingActions() {
     } catch (err) {
         console.error('Failed to attach language toggle listener:', err);
     }
+}
 
-    // show buttons initially (always visible in corner)
-    actionContainer.classList.add('visible');
+// ========== أزرار عائمة: واتساب والاتصال ==========
+function initFloatingActions() {
+    // create container for floating action buttons
+    const actionContainer = document.createElement('div');
+    actionContainer.className = 'floating-actions';
+    actionContainer.style.zIndex = '9999';
+
+    // WhatsApp button
+    const whatsappBtn = document.createElement('a');
+    whatsappBtn.href = 'https://wa.me/966556684992';
+    whatsappBtn.className = 'floating-btn action-whatsapp';
+    whatsappBtn.title = 'تواصل عبر واتساب | WhatsApp';
+    whatsappBtn.innerHTML = '<i class="fab fa-whatsapp"></i>';
+    whatsappBtn.target = '_blank';
+    whatsappBtn.rel = 'noopener noreferrer';
+
+    // Phone button
+    const phoneBtn = document.createElement('a');
+    phoneBtn.href = 'tel:+966558868787';
+    phoneBtn.className = 'floating-btn action-phone';
+    phoneBtn.title = 'اتصل بنا | Call Us';
+    phoneBtn.innerHTML = '<i class="fas fa-phone"></i>';
+
+    // Append buttons to container
+    actionContainer.appendChild(whatsappBtn);
+    actionContainer.appendChild(phoneBtn);
     
-    // Optional: hide/show on scroll (commented out - buttons always visible)
-    // window.addEventListener('scroll', function() {
-    //     if (window.pageYOffset > 300) {
-    //         actionContainer.classList.add('visible');
-    //     } else {
-    //         actionContainer.classList.remove('visible');
-    //     }
-    // });
+    // Add to body
+    document.body.appendChild(actionContainer);
+
+    // Show buttons with animation
+    setTimeout(() => {
+        actionContainer.classList.add('visible');
+    }, 500);
 }
 
 // ========== تأثير الإضاءة على الأزرار ==========
