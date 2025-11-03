@@ -425,7 +425,7 @@ function initFormAnimations() {
 
 // ========== تأثيرات الأيقونات ==========
 document.addEventListener('DOMContentLoaded', function() {
-    const icons = document.querySelectorAll('.service-icon i, .contact-item-icon i');
+    const icons = document.querySelectorAll('.service-icon i');
     
     icons.forEach(icon => {
         icon.addEventListener('mouseenter', function() {
