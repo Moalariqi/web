@@ -272,19 +272,38 @@ function initIntersectionObserver() {
 function initCounterAnimation() {
     const statItems = document.querySelectorAll('.stat-item h4');
     
+    // Helper to convert to Arabic numerals
+    function toArabicNumerals(num) {
+        return num.toString().replace(/\d/g, d => String.fromCharCode(d.charCodeAt(0) + 1584));
+    }
+    
+    // Helper to check if current language is Arabic
+    function isArabicMode() {
+        const savedLang = localStorage.getItem('site-lang') || 'ar';
+        return savedLang === 'ar';
+    }
+    
     const counterObserver = new IntersectionObserver(function(entries) {
         entries.forEach(entry => {
-            if (entry.isIntersecting) {
+            if (entry.isIntersecting && !entry.target.dataset.animated) {
                 const target = entry.target;
                 const text = target.textContent;
-                const numbers = text.match(/[\d,]+/);
+                
+                // Extract numbers (both Arabic ٠-٩ and English 0-9)
+                const numbers = text.match(/[\d٠-٩,]+/);
                 
                 if (numbers) {
-                    const finalValue = parseInt(numbers[0].replace(/,/g, ''));
-                    const suffix = text.replace(/[\d,]+/, '').trim();
+                    // Convert Arabic numerals to English for calculation
+                    const numStr = numbers[0].replace(/[٠-٩]/g, d => 
+                        String.fromCharCode(d.charCodeAt(0) - 1584)
+                    );
+                    const finalValue = parseInt(numStr.replace(/,/g, ''));
+                    const suffix = text.replace(/[\d٠-٩,]+/, '').trim();
                     const duration = 2000;
                     const step = finalValue / (duration / 16);
                     let current = 0;
+                    
+                    target.dataset.animated = 'true';
                     
                     const counter = setInterval(() => {
                         current += step;
@@ -293,15 +312,25 @@ function initCounterAnimation() {
                             clearInterval(counter);
                         }
                         
-                        // تنسيق الأرقام
-                        let displayValue = Math.floor(current).toLocaleString('ar-SA');
-                        if (text.includes('%')) {
-                            displayValue += '%';
-                        } else if (text.includes('/')) {
-                            displayValue = text;
+                        // Format numbers based on language
+                        let displayValue = Math.floor(current).toLocaleString('en-US');
+                        
+                        // Convert to Arabic numerals if in Arabic mode
+                        if (isArabicMode()) {
+                            displayValue = toArabicNumerals(displayValue);
                         }
                         
-                        target.textContent = displayValue + (suffix ? ' ' + suffix : '');
+                        // Handle special cases
+                        if (text.includes('%') || text.includes('٪')) {
+                            displayValue += isArabicMode() ? '٪' : '%';
+                        } else if (text.includes('/') || text.includes('٧')) {
+                            // For 24/7, keep it as is
+                            displayValue = isArabicMode() ? toArabicNumerals('24/7') : '24/7';
+                        } else {
+                            displayValue += suffix;
+                        }
+                        
+                        target.textContent = displayValue;
                     }, 16);
                 }
                 
@@ -612,8 +641,9 @@ function initHeaderActions() {
     // store contact info headers
     origTexts.contactHeaders = Array.from(document.querySelectorAll('.contact-item h4')).map(h => h.textContent.trim());
     
-    // store stats labels
+    // store stats labels and numbers
     origTexts.statsLabels = Array.from(document.querySelectorAll('.stat-item p')).map(p => p.textContent.trim());
+    origTexts.statsNumbers = Array.from(document.querySelectorAll('.stat-item h4')).map(h => h.textContent.trim());
     
     // store about section
     const aboutH3 = document.querySelector('.about-text h3');
@@ -631,6 +661,23 @@ function initHeaderActions() {
         Array.from(ul.querySelectorAll('a')).map(a => a.textContent.trim())
     );
     origTexts.footerBottom = (document.querySelector('.footer-bottom p') || {}).textContent || '';
+
+    // Helper function to convert Arabic numerals to English
+    function toEnglishNumbers(str) {
+        const arabicNumerals = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
+        const englishNumerals = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+        
+        return str.replace(/[٠-٩]/g, function(match) {
+            return englishNumerals[arabicNumerals.indexOf(match)];
+        });
+    }
+    
+    // Helper function to convert English numerals to Arabic
+    function toArabicNumbers(str) {
+        return str.replace(/\d/g, function(match) {
+            return String.fromCharCode(match.charCodeAt(0) + 1584);
+        });
+    }
 
     // proofread English translations (minor adjustments done in the strings above)
     // Handler to switch language
@@ -747,6 +794,13 @@ function initHeaderActions() {
             
             const submitBtn = document.querySelector('.contact-form button[type="submit"]'); if (submitBtn) submitBtn.textContent = 'Send Message';
 
+            // translate stats section numbers to English numerals
+            document.querySelectorAll('.stat-item h4').forEach((h) => {
+                h.textContent = toEnglishNumbers(h.textContent);
+                // Reset animation flag so it can re-animate
+                delete h.dataset.animated;
+            });
+            
             // translate stats section labels
             const statsLabelsEn = [
                 'Annual customs clearance operations',
@@ -899,6 +953,15 @@ function initHeaderActions() {
                 });
             }
 
+            // restore stats numbers to original (with Arabic numerals if any)
+            document.querySelectorAll('.stat-item h4').forEach((h, i) => {
+                if (origTexts.statsNumbers && origTexts.statsNumbers[i]) {
+                    h.textContent = toArabicNumbers(origTexts.statsNumbers[i]);
+                    // Reset animation flag so it can re-animate
+                    delete h.dataset.animated;
+                }
+            });
+            
             // restore stats labels
             document.querySelectorAll('.stat-item p').forEach((p, i) => {
                 if (origTexts.statsLabels && origTexts.statsLabels[i]) p.textContent = origTexts.statsLabels[i];
@@ -957,8 +1020,8 @@ function initHeaderActions() {
     } else if (savedLang === 'ar') {
         setLanguage('ar');
     } else {
-        // default: Arabic
-        if (langText) langText.textContent = 'ع';
+        // default: Arabic - keep numbers as they are in HTML (English format)
+        if (langText) langText.textContent = 'EN';
         localStorage.setItem('site-lang', 'ar');
         document.documentElement.lang = 'ar';
         document.body.setAttribute('dir', 'rtl');
