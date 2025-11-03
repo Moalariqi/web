@@ -475,17 +475,17 @@ scrollTopBtn.style.cssText = `
     position: fixed;
     bottom: 100px;
     right: 30px;
-    width: 50px;
-    height: 50px;
-    background: linear-gradient(135deg, var(--purple-dark) 0%, var(--purple-medium) 100%);
+    width: 55px;
+    height: 55px;
+    background: linear-gradient(135deg, #5458a2 0%, #6d72b5 100%);
     color: white;
     border: none;
     border-radius: 50%;
-    font-size: 20px;
+    font-size: 22px;
     cursor: pointer;
     display: none;
     z-index: 9998;
-    box-shadow: 0 4px 15px rgba(84, 88, 162, 0.4);
+    box-shadow: 0 8px 24px rgba(84, 88, 162, 0.4), 0 4px 12px rgba(0, 0, 0, 0.2);
     transition: all 0.3s ease;
     align-items: center;
     justify-content: center;
@@ -493,12 +493,12 @@ scrollTopBtn.style.cssText = `
 
 scrollTopBtn.addEventListener('mouseenter', function() {
     this.style.transform = 'translateY(-5px) scale(1.1)';
-    this.style.boxShadow = '0 6px 20px rgba(84, 88, 162, 0.6)';
+    this.style.boxShadow = '0 12px 35px rgba(84, 88, 162, 0.6), 0 6px 16px rgba(0, 0, 0, 0.3)';
 });
 
 scrollTopBtn.addEventListener('mouseleave', function() {
     this.style.transform = 'translateY(0) scale(1)';
-    this.style.boxShadow = '0 4px 15px rgba(84, 88, 162, 0.4)';
+    this.style.boxShadow = '0 8px 24px rgba(84, 88, 162, 0.4), 0 4px 12px rgba(0, 0, 0, 0.2)';
 });
 
 scrollTopBtn.addEventListener('click', scrollToTop);

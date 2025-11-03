@@ -1884,23 +1884,24 @@ body.dark-theme .btn-outline:hover {
 }
 
 .floating-btn {
-    width: 55px;
-    height: 55px;
+    width: 60px;
+    height: 60px;
     border-radius: 50%;
     border: none;
     background: linear-gradient(135deg, var(--purple-dark) 0%, var(--purple-medium) 100%);
-    color: var(--white);
-    font-size: 20px;
+    color: var(--white) !important;
+    font-size: 24px;
     cursor: pointer;
-    box-shadow: var(--shadow-purple);
+    box-shadow: 0 8px 24px rgba(84, 88, 162, 0.4), 0 4px 12px rgba(0, 0, 0, 0.2);
     display: flex;
     align-items: center;
     justify-content: center;
     transition: all var(--transition-base);
     position: relative;
-    overflow: hidden;
+    overflow: visible;
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
+    text-decoration: none;
 }
 
 .floating-btn i {
@@ -1910,7 +1911,8 @@ body.dark-theme .btn-outline:hover {
 
 .floating-btn:hover {
     transform: translateY(-5px) scale(1.1);
-    box-shadow: 0 10px 30px rgba(84, 88, 162, 0.5);
+    box-shadow: 0 12px 35px rgba(84, 88, 162, 0.6), 0 6px 16px rgba(0, 0, 0, 0.3);
+    color: var(--white) !important;
 }
 
 .floating-btn:active {
@@ -1918,13 +1920,14 @@ body.dark-theme .btn-outline:hover {
 }
 
 .action-whatsapp {
-    background: #25D366;
-    box-shadow: 0 8px 24px rgba(37, 211, 102, 0.5);
+    background: #25D366 !important;
+    box-shadow: 0 8px 24px rgba(37, 211, 102, 0.5), 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .action-whatsapp:hover {
-    background: #1da851;
-    box-shadow: 0 12px 32px rgba(37, 211, 102, 0.7);
+    background: #1da851 !important;
+    box-shadow: 0 12px 35px rgba(37, 211, 102, 0.7), 0 6px 16px rgba(0, 0, 0, 0.3);
+    transform: translateY(-5px) scale(1.1);
 }
 
 .action-whatsapp::after {
@@ -1953,26 +1956,55 @@ body.dark-theme .btn-outline:hover {
 }
 
 .action-phone {
-    background: #5458a2;
-    box-shadow: 0 8px 24px rgba(84, 88, 162, 0.5);
+    background: linear-gradient(135deg, #5458a2 0%, #6d72b5 100%) !important;
+    box-shadow: 0 8px 24px rgba(84, 88, 162, 0.5), 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .action-phone:hover {
-    background: #3d4178;
-    box-shadow: 0 12px 32px rgba(84, 88, 162, 0.7);
+    background: linear-gradient(135deg, #3d4178 0%, #5458a2 100%) !important;
+    box-shadow: 0 12px 35px rgba(84, 88, 162, 0.7), 0 6px 16px rgba(0, 0, 0, 0.3);
+    transform: translateY(-5px) scale(1.1);
 }
 
 body.dark-theme .floating-btn {
-    box-shadow: 0 10px 30px rgba(84, 88, 162, 0.3);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), 0 4px 12px rgba(84, 88, 162, 0.3);
 }
 
 body.dark-theme .floating-btn:hover {
-    box-shadow: 0 15px 40px rgba(84, 88, 162, 0.6);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.5), 0 6px 16px rgba(84, 88, 162, 0.5);
+}
+
+body.dark-theme .action-whatsapp {
+    box-shadow: 0 8px 24px rgba(37, 211, 102, 0.4), 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-theme .action-whatsapp:hover {
+    box-shadow: 0 12px 35px rgba(37, 211, 102, 0.6), 0 6px 16px rgba(0, 0, 0, 0.4);
+}
+
+body.dark-theme .action-phone {
+    box-shadow: 0 8px 24px rgba(84, 88, 162, 0.4), 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-theme .action-phone:hover {
+    box-shadow: 0 12px 35px rgba(84, 88, 162, 0.6), 0 6px 16px rgba(0, 0, 0, 0.4);
 }
 
 /* زر العودة للأعلى */
 .scroll-to-top {
     display: flex;
+}
+
+.scroll-to-top:hover {
+    background: linear-gradient(135deg, #3d4178 0%, #5458a2 100%) !important;
+}
+
+body.dark-theme .scroll-to-top {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), 0 4px 12px rgba(84, 88, 162, 0.3) !important;
+}
+
+body.dark-theme .scroll-to-top:hover {
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.5), 0 6px 16px rgba(84, 88, 162, 0.5) !important;
 }
 
 /* استجابة الجوال للأزرار العائمة */
